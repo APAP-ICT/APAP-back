@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class S3ImageFileUploader {
 
     private final AmazonS3Client amazonS3Client;
-    private final String bucket = "dall-e-bucket";
+    private final String bucket = "apap-back";
 
     public S3ImageFileUploader(AmazonS3Client amazonS3Client) {
         this.amazonS3Client = amazonS3Client;
@@ -37,7 +37,7 @@ public class S3ImageFileUploader {
         amazonS3Client.putObject(bucket, key, file.getInputStream(), metadata);
 
         // S3에 파일 업로드된 객체의 URL을 가져온다
-        String objectUrl = amazonS3Client.getUrl("dall-e-bucket", key).toString();
+        String objectUrl = amazonS3Client.getUrl("apap-back", key).toString();
         log.info("AWS 에 저장된 이미지 주소: {}", objectUrl);
         return objectUrl;
     }
