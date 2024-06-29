@@ -38,8 +38,11 @@ jobs:
           echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
           cat ./src/main/resources/application.properties
 
+    #- name: Build with Gradle # jar 파일 빌드
+    #  uses: gradle/gradle-build-action@v3
+
     - name: Build with Gradle # jar 파일 빌드
-      uses: gradle/gradle-build-action@v3
+      run: .gradlew build
 
     - name: Find Jar Files
       run: |
