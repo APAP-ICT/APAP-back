@@ -49,4 +49,6 @@ jobs:
       
     - name: Copy JAR file to EC2 # 빌드한 파일 EC2에 복사
       run: |
-        scp -i ${{ secrets.REMOTE_PRIVATE_KEY }} build/libs/apap-backend-0.0.1-SNAPSHOT.jar ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_IP }}:/apap-back/
+        echo "${{ secrets.REMOTE_PRIVATE_KEY }}" > temp.pem
+        scp -i temp.pem build/libs/apap-backend-0.0.1-SNAPSHOT.jar ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_IP }}:/apap-back/
+        rm temp.pem
