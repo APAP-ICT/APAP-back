@@ -40,7 +40,9 @@ jobs:
 
     - name: Build with Gradle # jar 파일 빌드
       uses: gradle/gradle-build-action@v3
-
+      with:
+          arguments: build
+          
     - name: Check Jar file at github action virtual machine
       run: cat build.gradle
       
