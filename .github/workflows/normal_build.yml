@@ -42,7 +42,9 @@ jobs:
       run: ./gradlew build -x test
 
     - name: Check Jar file at build/libs
-      run: ls build/libs
+      run: |
+        ls build/libs
+        pwd
 
     - name: Copy JAR file to EC2 # 빌드한 파일 EC2 에 복사
       uses: appleboy/ssh-action@master
