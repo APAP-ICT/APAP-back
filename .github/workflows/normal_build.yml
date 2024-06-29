@@ -52,7 +52,7 @@ jobs:
           cd ./apap-back/
           mkdir testfolder
           echo "${{ secrets.REMOTE_PRIVATE_KEY }}" > temp.pem
-          scp -i temp.pem apap-backend-0.0.1-SNAPSHOT.jar ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_IP }}:/apap-back/
+          scp -i temp.pem apap-backend-0.0.1-SNAPSHOT.jar ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_IP }}:./apap-back/
           rm temp.pem
     
 
