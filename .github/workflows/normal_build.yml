@@ -42,7 +42,7 @@ jobs:
     #  uses: gradle/gradle-build-action@v3
 
     - name: Build with Gradle # jar 파일 빌드
-      run: .gradlew build
+      run: pwd
 
     - name: Find Jar Files
       run: |
