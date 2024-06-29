@@ -24,6 +24,10 @@ jobs:
     - name: Set Gradle Wrapper executable
       run: chmod +x ./gradlew
 
+    - name: Check for built JAR file # 정상 빌드 여부 확
+      run: ls apap-back/*.jar
+
+
     - name: Execute remote ssh commands
       uses: appleboy/ssh-action@master # ssh 연결을 위한 오픈 소스 액션
       with:
