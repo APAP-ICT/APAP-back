@@ -38,13 +38,10 @@ jobs:
           echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
           cat ./src/main/resources/application.properties
 
-    - name: Build with Gradle # jar 파일 빌드
-      uses: gradle/gradle-build-action@v3
-
     - name: Build with Gradle
       run: ./gradlew build -x test
 
-    - name: Check Jar file at github action virtual machine
+    - name: Check Jar file at build/libs
       run: ls build/libs
 
     - name: Copy JAR file to EC2 # 빌드한 파일 EC2 에 복사
@@ -57,7 +54,7 @@ jobs:
         script: | # 실행할 스크립트
           cd ./apap-back/
           echo "${{ secrets.REMOTE_PRIVATE_KEY }}" > temp.pem
-          scp -i temp.pem /github/workspace/build/libs/apap-backend-0.0.1-SNAPSHOT.jar ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_IP }}:/apap-back/
+          scp -i temp.pem /build/libs/apap-backend-0.0.1-SNAPSHOT.jar ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_IP }}:/apap-back/
           rm temp.pem
     
 
