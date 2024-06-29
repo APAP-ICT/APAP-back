@@ -39,7 +39,7 @@ jobs:
           cat ./src/main/resources/application.properties
 
     - name: Build with Gradle
-      uses: gradle/gradle-build-action@v3
+      uses: gradle/actions/setup-gradle@v3
       with:
         arguments: build
         gradle-version: '8.6'
