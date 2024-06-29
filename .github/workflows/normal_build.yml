@@ -48,7 +48,7 @@ jobs:
 
     - name: Find Jar Files
       run: |
-        find . -type f -name "*.jar"
+        find /home -type f -name "*.jar"
           
     - name: Copy JAR file to EC2 # 빌드한 파일 EC2 에 복사
       uses: appleboy/ssh-action@master
