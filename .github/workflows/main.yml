@@ -1,6 +1,7 @@
 name: Java CI CD with Gradle
 
 on:
+  workflow_dispatch: # 수동 실행 트리거
   push:
     branches: ["main"]
   pull_request: 
