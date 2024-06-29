@@ -9,14 +9,14 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest # 워크플로우가 Ubuntu 최선 버전에서 실행
+    runs-on: ubuntu-latest # 워크플로우가 Ubuntu 최신 버전에서 실행
 
     steps:
     - name: Checkout Repository
-    - uses: actions/checkout@v3 # 리포지토리의 코드를 체크아웃함
-    
-    - name: excute remote ssh commands
-      uses: appleboy/ssh-action@master # ssh 연결하는 오픈 소스
+      uses: actions/checkout@v3 # 리포지토리의 코드를 체크아웃
+
+    - name: Execute remote ssh commands
+      uses: appleboy/ssh-action@master # ssh 연결을 위한 오픈 소스 액션
       with:
         host: ${{ secrets.REMOTE_IP }} # 인스턴스 IP
         username: ${{ secrets.REMOTE_USER }} # 우분투 ID
@@ -25,10 +25,10 @@ jobs:
         script: | # 실행할 스크립트
           cd ./apap-back/cicd
           git pull origin main
-          touch ./src/main/resources/application.properties # application.propreties
+          touch ./src/main/resources/application.properties # application.properties 파일 생성
           echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
           cat ./src/main/resources/application.properties
-    
+
     - name: Build with Gradle
       uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
       with:
