@@ -50,5 +50,5 @@ jobs:
         port: ${{ secrets.REMOTE_SSH_PORT }} # 접속 포트
         script: | # 실행할 스크립트
           cd ./apap-back/cicd/apap-back
-          scp -i ${{ secret.REMOTE_PRIVATE_KEY }} apap-backend-0.0.1-SNAPSHOT.jar ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_IP }}:/apap-back/
+          scp -i ${{ secrets.REMOTE_PRIVATE_KEY }} apap-backend-0.0.1-SNAPSHOT.jar ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_IP }}:/apap-back/
           
