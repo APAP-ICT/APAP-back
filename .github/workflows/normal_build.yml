@@ -46,6 +46,9 @@ jobs:
         ls
         ls build/libs
         pwd
+    
+    - name: Check JAR file existence in /home/runner/work/APAP-back/APAP-back/build/libs
+      run: ls -l /home/runner/work/APAP-back/APAP-back/build/libs
 
     - name: Copy JAR file to EC2 # 빌드한 파일 EC2 에 복사
       uses: appleboy/ssh-action@master
