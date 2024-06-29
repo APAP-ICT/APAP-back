@@ -46,6 +46,7 @@ jobs:
         ls
         ls build/libs
         pwd
+        chmod +x /home/runner/work/APAP-back/APAP-back/build/libs/apap-backend-0.0.1-SNAPSHOT.jar
     
     - name: Check JAR file existence in /home/runner/work/APAP-back/APAP-back/build/libs
       run: ls -l /home/runner/work/APAP-back/APAP-back/build/libs
@@ -60,5 +61,5 @@ jobs:
         script: | # 실행할 스크립트
           cd ./apap-back/
           echo "${{ secrets.REMOTE_PRIVATE_KEY }}" > temp.pem
-          scp -i temp.pem /home/runner/work/APAP-back/APAP-back/build/libs/apap-backend-0.0.1-SNAPSHOT ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_IP }}:/apap-back/
+          scp -i temp.pem /home/runner/work/APAP-back/APAP-back/build/libs/apap-backend-0.0.1-SNAPSHOT.jar ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_IP }}:/apap-back/
           rm temp.pem
