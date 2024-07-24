@@ -1,5 +1,6 @@
 package com.example.apapbackend.fcm;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -9,16 +10,20 @@ import org.springframework.stereotype.Service;
 public class ScheduledNotificationService {
 
     private final FCMService fcmService;
+    private final FCMTokenRepository fcmTokenRepository;
 
     // 디바이스 토큰 기반 메시징
     @Scheduled(fixedRate = 30000) // 30초마다 실행
     public void sendNotification() {
+        List<String> tokens = getTokens();
+
         // 전송할 알림 정보
-        String token = "your-fcm-token-here";
         String title = "Scheduled Notification";
         String body = "This is a notification sent every 30 secs.";
 
-        fcmService.sendNotification(token, title, body);
+        for (String token : tokens) {
+            fcmService.sendNotification(token, title, body);
+        }
     }
 
     // 주제 기반 메시징
@@ -30,5 +35,11 @@ public class ScheduledNotificationService {
         String body = "This is a notification sent every 30 secs.";
 
         fcmService.sendNotificationToTopic(topic, title, body);
+    }
+
+    private List<String> getTokens() {
+        List<FCMToken> tokenEntities = fcmTokenRepository.findAll();
+        List<String> tokens = tokenEntities.stream().map(FCMToken::getToken).toList();
+        return tokens;
     }
 }
