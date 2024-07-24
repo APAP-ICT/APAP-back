@@ -19,6 +19,8 @@ bin/
 
 ### IntelliJ IDEA ###
 application.properties
+### firebase secret key ###
+firebase-service-account
 
 .idea
 *.iws
