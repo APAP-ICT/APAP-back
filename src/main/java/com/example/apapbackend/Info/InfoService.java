@@ -68,14 +68,12 @@ public class InfoService {
         // 알림을 보낼 조건 확인
         if (lastTimestamp != null) {
             Duration duration = Duration.between(lastTimestamp, currentTimestamp);
-            // 같은 라벨이 30초 이상 지났다면 알림 전송
+            // 같은 라벨이 30초 이상 지났다면 알림 전송 - "지속"
             if (duration.getSeconds() >= 30) {
                 Info savedInfo = save(infoRequest.cameraName(), infoRequest.localDateTime(),
                     infoRequest.label(),
                     infoRequest.base64Image());
-                fcmService.sendNotificationToMany(
-                    tokens, savedInfo.getId(), infoRequest.label(), "직전 이상 상황이 계속되고 있습니다.", savedInfo.getImageUrl()
-                );
+                fcmService.sendNotificationToMany(tokens, infoRequest, savedInfo, false);
                 infoTracker.updateTimestamp(label, currentTimestamp);
             }
             return;
@@ -84,10 +82,8 @@ public class InfoService {
         Info savedInfo = save(infoRequest.cameraName(), infoRequest.localDateTime(),
             infoRequest.label(),
             infoRequest.base64Image());
-        // 새로운 라벨이라면 즉시 알림 전송
-        fcmService.sendNotificationToMany(
-            tokens, savedInfo.getId(), infoRequest.label(), "새로운 이상 상황이 발생했습니다.", savedInfo.getImageUrl()
-        );
+        // 새로운 라벨이라면 즉시 알림 전송 - "발생"
+        fcmService.sendNotificationToMany(tokens, infoRequest, savedInfo, true);
         // 현재 라벨에 대한 타임스탬프 업데이트
         infoTracker.updateTimestamp(label, currentTimestamp);
     }

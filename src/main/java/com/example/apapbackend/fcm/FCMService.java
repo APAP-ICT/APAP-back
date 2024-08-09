@@ -1,5 +1,7 @@
 package com.example.apapbackend.fcm;
 
+import com.example.apapbackend.Info.Info;
+import com.example.apapbackend.Info.dto.InfoRequest;
 import com.example.apapbackend.fcm.dto.FCMTokenRequest;
 import com.google.firebase.messaging.BatchResponse;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -7,7 +9,9 @@ import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.MulticastMessage;
 import com.google.firebase.messaging.Notification;
 import com.google.firebase.messaging.SendResponse;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -23,17 +27,22 @@ public class FCMService {
     /**
      * FCMToken 을 이용한 푸시 알림 전송
      */
-    public void sendNotificationToMany(List<String> tokens, Long infoId, String label, String message,
-        String s3ImageUrl) {
+    public void sendNotificationToMany(List<String> tokens, InfoRequest infoRequest, Info savedInfo, Boolean isNew) {
+        String newOrContinue = isNew ? " 발생" : " 지속중";
+
+        Map<String, String> data = new HashMap<>();
+        data.put("id", String.valueOf(savedInfo.getId())); // 이상 상황(Info) ID
+        data.put("isNew", Boolean.toString(isNew)); // 이상 상황 발생 or 지속 여부
+
         // FCM에 보낼 메시지 빌드
         MulticastMessage fcmMessage = MulticastMessage.builder()
             .addAllTokens(tokens)
             .setNotification(com.google.firebase.messaging.Notification.builder()
-                .setTitle(label) // 제목
-                .setBody(message) // 메시지
-                .setImage(s3ImageUrl) // 이미지
+                .setTitle(infoRequest.cameraName() + "에서 " + infoRequest.label() + newOrContinue) // 제목 ex) E-114 에서 안전모 미착용 발생
+                .setBody(infoRequest.localDateTime().format(DateTimeFormatter.ofPattern("MM월 dd일 HH시 mm분"))) // 발생 시각 ex) 7월 7일 7시 7분
+                .setImage(savedInfo.getImageUrl()) // 이상 상황 이미지 주소 URL
                 .build())
-            .putAllData(Map.of("id", String.valueOf(infoId))) // 이상 상황(Info) ID
+            .putAllData(data)
             .build();
 
         try {
