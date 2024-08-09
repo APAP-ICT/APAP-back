@@ -7,15 +7,9 @@ import jakarta.validation.constraints.NotBlank;
 public record FCMTokenRequest(
 
     @NotBlank
-    @Email
-    String email,
-    @NotBlank
     String token
 ) {
     public FCMToken toEntity() {
-        return new FCMToken(
-            this.email,
-            this.token
-        );
+        return new FCMToken(this.token);
     }
 }

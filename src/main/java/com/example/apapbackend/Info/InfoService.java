@@ -1,7 +1,7 @@
 package com.example.apapbackend.Info;
 
 import com.example.apapbackend.Info.dto.InfoRequest;
-import com.example.apapbackend.S3.S3ImageFileUploader;
+import com.example.apapbackend.s3.S3ImageFileUploader;
 import com.example.apapbackend.fcm.FCMService;
 import com.example.apapbackend.fcm.FCMToken;
 import com.example.apapbackend.fcm.FCMTokenRepository;

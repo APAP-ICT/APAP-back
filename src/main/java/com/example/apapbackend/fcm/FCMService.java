@@ -92,13 +92,9 @@ public class FCMService {
 
     @Transactional
     public void saveToken(FCMTokenRequest tokenRequest) {
-        Optional<FCMToken> fcmToken = fcmTokenRepository.findByEmail(tokenRequest.email());
-        if (fcmToken.isPresent()) {
-            fcmToken.get().updateToken(tokenRequest.token());
-            return;
+        if (!fcmTokenRepository.existsByToken(tokenRequest.token())) {
+            fcmTokenRepository.save(tokenRequest.toEntity());
         }
-        FCMToken token = tokenRequest.toEntity();
-        fcmTokenRepository.save(token);
     }
 
     public List<String> getTokens() {
