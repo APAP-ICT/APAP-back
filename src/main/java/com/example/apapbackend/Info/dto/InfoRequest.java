@@ -7,6 +7,6 @@ public record InfoRequest(
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime localDateTime,
     String label,
     String base64Image
-){
+) {
 
 }

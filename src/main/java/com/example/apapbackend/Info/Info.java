@@ -1,6 +1,5 @@
 package com.example.apapbackend.Info;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,16 +9,15 @@ import java.time.LocalDateTime;
 @Entity
 public class Info {
 
-    @Id @GeneratedValue
-    private Long id;
     @Column
     public LocalDateTime localDateTime;
-
     @Column
     public String label;
-
     @Column
     public String imageUrl;
+    @Id
+    @GeneratedValue
+    private Long id;
 
     public Info(LocalDateTime localDateTime, String label, String imageUrl) {
         this.localDateTime = localDateTime;
@@ -55,11 +53,11 @@ public class Info {
         this.imageUrl = imageUrl;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

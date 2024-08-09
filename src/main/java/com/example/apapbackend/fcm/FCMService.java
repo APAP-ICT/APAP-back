@@ -9,7 +9,6 @@ import com.google.firebase.messaging.Notification;
 import com.google.firebase.messaging.SendResponse;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +37,8 @@ public class FCMService {
         }
     }
 
-    public void sendNotificationToMany(List<String> tokens, String label, String message, String s3ImageUrl) {
+    public void sendNotificationToMany(List<String> tokens, String label, String message,
+        String s3ImageUrl) {
         // FCM에 보낼 메시지 빌드
         MulticastMessage fcmMessage = MulticastMessage.builder()
             .addAllTokens(tokens)
@@ -63,7 +63,8 @@ public class FCMService {
                 }
             }
 
-            System.out.println("Successfully sent messages with IDs: " + String.join(", ", successfulIds));
+            System.out.println(
+                "Successfully sent messages with IDs: " + String.join(", ", successfulIds));
             if (!failedIds.isEmpty()) {
                 System.err.println("Failed to send messages: " + String.join(", ", failedIds));
             }

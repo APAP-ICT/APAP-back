@@ -27,7 +27,7 @@ public class S3ImageFileUploader {
         // base64 로 인코딩한 이미지를 MultipartFile 로 변환
         MultipartFile file = convertBase64ToMultipartFile(base64Image);
         // S3에 저장할 고유한 키 생성(파일명으로 사용)
-         String key = UUID.randomUUID().toString(); // 이거 쓰면 unique
+        String key = UUID.randomUUID().toString(); // 이거 쓰면 unique
 //        String key = file.getOriginalFilename(); // 일단 이걸 키값으로 사용
         // 이미지 메타데이터 설정
         ObjectMetadata metadata = new ObjectMetadata();

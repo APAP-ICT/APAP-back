@@ -17,6 +17,7 @@ public class FCMToken {
     private Long id;
 
     private String token;
+
     protected FCMToken() {
     }
 
