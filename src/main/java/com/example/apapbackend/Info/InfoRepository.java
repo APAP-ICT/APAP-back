@@ -28,4 +28,26 @@ public interface InfoRepository extends JpaRepository<Info, Long>, JpaSpecificat
            "GROUP BY FUNCTION('DATE', i.localDateTime)")
     Map<LocalDateTime, Long> findDailyCountsByDateRange(@Param("startDate") LocalDateTime startDate,
         @Param("endDate") LocalDateTime endDate);
+
+
+
+    @Query("SELECT FUNCTION('DATE', i.localDateTime) AS date, i.label, COUNT(i) AS count " +
+           "FROM Info i " +
+           "WHERE i.localDateTime BETWEEN :startDate AND :endDate " +
+           "GROUP BY FUNCTION('DATE', i.localDateTime), i.label " +
+           "ORDER BY FUNCTION('DATE', i.localDateTime), COUNT(i) DESC")
+    List<Object[]> findDailyLabelCountsByDateRange(
+        @Param("startDate") LocalDateTime startDate,
+        @Param("endDate") LocalDateTime endDate
+    );
+
+    @Query("SELECT i.label, COUNT(i) AS count " +
+           "FROM Info i " +
+           "WHERE i.localDateTime BETWEEN :startDate AND :endDate " +
+           "GROUP BY i.label " +
+           "ORDER BY COUNT(i) DESC")
+    List<Object[]> findLabelCountsForLast3Days(
+        @Param("startDate") LocalDateTime startDate,
+        @Param("endDate") LocalDateTime endDate
+    );
 }

@@ -1,6 +1,6 @@
 package com.example.apapbackend.dashBoard.dto;
 
-public record DashBoardResponse(
+public record DashBoardTopResponse(
     Situation mostFrequentSituation, // 가장 많이 발생한 이상 상황
     Camera mostFrequentCamera, // (이상 상황이) 가장 많이 발생한 카메라
     SituationCount averageSituationCount // 직전 주 대비 이상 상황 일 평균 발생 횟수
