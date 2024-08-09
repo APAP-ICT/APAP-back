@@ -74,7 +74,7 @@ public class InfoService {
                     infoRequest.label(),
                     infoRequest.base64Image());
                 fcmService.sendNotificationToMany(
-                    tokens, infoRequest.label(), "직전 이상 상황이 계속되고 있습니다.", savedInfo.getImageUrl()
+                    tokens, savedInfo.getId(), infoRequest.label(), "직전 이상 상황이 계속되고 있습니다.", savedInfo.getImageUrl()
                 );
                 infoTracker.updateTimestamp(label, currentTimestamp);
             }
@@ -86,7 +86,7 @@ public class InfoService {
             infoRequest.base64Image());
         // 새로운 라벨이라면 즉시 알림 전송
         fcmService.sendNotificationToMany(
-            tokens, infoRequest.label(), "새로운 이상 상황이 발생했습니다.", savedInfo.getImageUrl()
+            tokens, savedInfo.getId(), infoRequest.label(), "새로운 이상 상황이 발생했습니다.", savedInfo.getImageUrl()
         );
         // 현재 라벨에 대한 타임스탬프 업데이트
         infoTracker.updateTimestamp(label, currentTimestamp);

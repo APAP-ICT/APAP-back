@@ -9,6 +9,7 @@ import com.google.firebase.messaging.Notification;
 import com.google.firebase.messaging.SendResponse;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,16 +23,17 @@ public class FCMService {
     /**
      * FCMToken 을 이용한 푸시 알림 전송
      */
-    public void sendNotificationToMany(List<String> tokens, String label, String message,
+    public void sendNotificationToMany(List<String> tokens, Long infoId, String label, String message,
         String s3ImageUrl) {
         // FCM에 보낼 메시지 빌드
         MulticastMessage fcmMessage = MulticastMessage.builder()
             .addAllTokens(tokens)
             .setNotification(com.google.firebase.messaging.Notification.builder()
-                .setTitle(label)
-                .setBody(message)
-                .setImage(s3ImageUrl)
+                .setTitle(label) // 제목
+                .setBody(message) // 메시지
+                .setImage(s3ImageUrl) // 이미지
                 .build())
+            .putAllData(Map.of("id", String.valueOf(infoId))) // 이상 상황(Info) ID
             .build();
 
         try {
