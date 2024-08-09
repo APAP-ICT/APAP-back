@@ -31,7 +31,7 @@ public class FCMService {
         String newOrContinue = isNew ? " 발생" : " 지속중";
 
         Map<String, String> data = new HashMap<>();
-        data.put("id", String.valueOf(savedInfo.getId())); // 이상 상황(Info) ID
+        data.put("infoId", String.valueOf(savedInfo.getId())); // 이상 상황(Info) ID
         data.put("isNew", Boolean.toString(isNew)); // 이상 상황 발생 or 지속 여부
 
         // FCM에 보낼 메시지 빌드
