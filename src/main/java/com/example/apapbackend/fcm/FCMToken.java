@@ -16,13 +16,19 @@ public class FCMToken {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    private String email;
+
     private String token;
 
     protected FCMToken() {
     }
 
-    public FCMToken(String token) {
+    public FCMToken(String email, String token) {
+        this.email = email;
         this.token = token;
     }
 
+    public void updateToken(String token) {
+        this.token = token;
+    }
 }

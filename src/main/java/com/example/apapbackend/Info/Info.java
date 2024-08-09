@@ -4,22 +4,26 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 @Entity
 public class Info {
 
+    @Id
+    @GeneratedValue
+    private Long id;
+    @NotBlank
+    private String cameraName;
     @Column
     public LocalDateTime localDateTime;
     @Column
     public String label;
     @Column
     public String imageUrl;
-    @Id
-    @GeneratedValue
-    private Long id;
 
-    public Info(LocalDateTime localDateTime, String label, String imageUrl) {
+    public Info(String cameraName, LocalDateTime localDateTime, String label, String imageUrl) {
+        this.cameraName = cameraName;
         this.localDateTime = localDateTime;
         this.label = label;
         this.imageUrl = imageUrl;
@@ -59,5 +63,9 @@ public class Info {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getCameraName() {
+        return cameraName;
     }
 }

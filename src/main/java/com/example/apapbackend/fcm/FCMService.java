@@ -19,24 +19,9 @@ public class FCMService {
 
     private final FCMTokenRepository fcmTokenRepository;
 
-    // 디바이스 토큰 기반 메시징
-    public void sendNotificationToOne(String token, String title, String body) {
-        Message message = Message.builder()
-            .setToken(token)
-            .setNotification(Notification.builder()
-                .setTitle(title)
-                .setBody(body)
-                .build())
-            .build();
-
-        try {
-            String response = FirebaseMessaging.getInstance().send(message);
-            System.out.println("Successfully sent message: " + response);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
+    /**
+     * FCMToken 을 이용한 푸시 알림 전송
+     */
     public void sendNotificationToMany(List<String> tokens, String label, String message,
         String s3ImageUrl) {
         // FCM에 보낼 메시지 빌드
@@ -73,29 +58,18 @@ public class FCMService {
         }
     }
 
-    //주제 기반 메시징
-    public void sendNotificationToTopic(String topic, String title, String body) {
-        Message message = Message.builder()
-            .setTopic(topic)
-            .setNotification(Notification.builder()
-                .setTitle(title)
-                .setBody(body)
-                .build())
-            .build();
-
-        try {
-            String response = FirebaseMessaging.getInstance().send(message);
-            System.out.println("Successfully sent message: " + response);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
+    /**
+     * 이메일과 쌍으로 토큰 저장
+     * 해당 이메일에 토큰 이미 존재할 경우 -> 토큰 업데이트
+     */
     @Transactional
     public void saveToken(FCMTokenRequest tokenRequest) {
-        if (!fcmTokenRepository.existsByToken(tokenRequest.token())) {
+        if (!fcmTokenRepository.existsByEmail(tokenRequest.email())) {
             fcmTokenRepository.save(tokenRequest.toEntity());
+            return;
         }
+        FCMToken fcmToken = fcmTokenRepository.findByEmail(tokenRequest.email());
+        fcmToken.updateToken(tokenRequest.token());
     }
 
     public List<String> getTokens() {

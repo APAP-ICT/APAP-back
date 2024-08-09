@@ -10,8 +10,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,11 +27,11 @@ public class InfoService {
     /**
      * 객체 정보 저장
      */
-    public Info save(LocalDateTime localDateTime, String label,
+    public Info save(String cameraName, LocalDateTime localDateTime, String label,
         String base64Image) {
         try {
             String objUrl = s3ImageFileUploader.uploadImageFromUrlToS3(base64Image);
-            Info info = new Info(localDateTime, label, objUrl);
+            Info info = new Info(cameraName, localDateTime, label, objUrl);
             return infoRepository.save(info);
         } catch (IOException e) {
             e.printStackTrace();
@@ -42,12 +41,20 @@ public class InfoService {
 
     /**
      * 모든 객체 탐지 정보 조회
+     * 시작 & 끝 기간, 카메라, 이상상황을 조건으로 받음 - null 인 경우엔 조건을 적용하지 않음
      */
-    public ResponseEntity<List<Info>> getInfos() {
-        List<Info> infos = infoRepository.findAll();
-        return ResponseEntity.status(HttpStatus.OK).body(infos);
+    public List<Info> getInfos(LocalDateTime startDate, LocalDateTime endDate, String cameraName, String label) {
+        Specification<Info> spec = Specification.where(InfoSpecifications.hasStartDate(startDate))
+            .and(InfoSpecifications.hasEndDate(endDate))
+            .and(InfoSpecifications.hasCameraName(cameraName))
+            .and(InfoSpecifications.hasLabel(label));
+
+        return infoRepository.findAll(spec);
     }
 
+    /**
+     * 조건에 따라 메시지 전송
+     */
     @Transactional
     public void processInfo(InfoRequest infoRequest) {
         List<FCMToken> fcmTokens = fcmTokenRepository.findAll();
@@ -63,7 +70,8 @@ public class InfoService {
             Duration duration = Duration.between(lastTimestamp, currentTimestamp);
             // 같은 라벨이 30초 이상 지났다면 알림 전송
             if (duration.getSeconds() >= 30) {
-                Info savedInfo = save(infoRequest.localDateTime(), infoRequest.label(),
+                Info savedInfo = save(infoRequest.cameraName(), infoRequest.localDateTime(),
+                    infoRequest.label(),
                     infoRequest.base64Image());
                 fcmService.sendNotificationToMany(
                     tokens, infoRequest.label(), "직전 이상 상황이 계속되고 있습니다.", savedInfo.getImageUrl()
@@ -73,7 +81,8 @@ public class InfoService {
             return;
         }
         // 새로운 라벨에 대한 정보 저장
-        Info savedInfo = save(infoRequest.localDateTime(), infoRequest.label(),
+        Info savedInfo = save(infoRequest.cameraName(), infoRequest.localDateTime(),
+            infoRequest.label(),
             infoRequest.base64Image());
         // 새로운 라벨이라면 즉시 알림 전송
         fcmService.sendNotificationToMany(
@@ -82,4 +91,11 @@ public class InfoService {
         // 현재 라벨에 대한 타임스탬프 업데이트
         infoTracker.updateTimestamp(label, currentTimestamp);
     }
+
+    public Info getInfo(Long infoId) {
+        Info info = infoRepository.findById(infoId)
+            .orElseThrow(() -> new RuntimeException("해당 ID 의 이상 상황 정보가 존재하지 않습니다."));
+        return info;
+    }
+
 }
