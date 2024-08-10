@@ -13,9 +13,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-
-    private final JwtAuthorizationArgumentResolver jwtAuthorizationArgumentResolver;
-    private final JwtInterceptor jwtInterceptor;
+//
+//    private final JwtAuthorizationArgumentResolver jwtAuthorizationArgumentResolver;
+//    private final JwtInterceptor jwtInterceptor;
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
@@ -31,22 +31,22 @@ public class WebConfig implements WebMvcConfigurer {
         };
     }
 
-    public WebConfig(
-        JwtAuthorizationArgumentResolver jwtAuthorizationArgumentResolver,
-        JwtInterceptor jwtInterceptor
-    ) {
-        this.jwtAuthorizationArgumentResolver = jwtAuthorizationArgumentResolver;
-        this.jwtInterceptor = jwtInterceptor;
-    }
-
-    @Override
-    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(jwtAuthorizationArgumentResolver);
-    }
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(jwtInterceptor)
-            .addPathPatterns("");
-    }
+//    public WebConfig(
+//        JwtAuthorizationArgumentResolver jwtAuthorizationArgumentResolver,
+//        JwtInterceptor jwtInterceptor
+//    ) {
+//        this.jwtAuthorizationArgumentResolver = jwtAuthorizationArgumentResolver;
+//        this.jwtInterceptor = jwtInterceptor;
+//    }
+//
+//    @Override
+//    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+//        resolvers.add(jwtAuthorizationArgumentResolver);
+//    }
+//
+//    @Override
+//    public void addInterceptors(InterceptorRegistry registry) {
+//        registry.addInterceptor(jwtInterceptor)
+//            .addPathPatterns("");
+//    }
 }

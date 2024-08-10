@@ -90,7 +90,7 @@ public class DashBoardService {
         LocalDateTime endDate = getEndOfDay(now);
 
         // 데이터 조회
-        List<Object[]> results = infoRepository.findLabelCountsForLast3Days(startDate, endDate);
+        List<Object[]> results = infoRepository.findLabelCountsByDateRange(startDate, endDate);
 
         // 결과를 이상 상황별로 집계
         Map<String, Long> labelCounts = new HashMap<>();
@@ -100,7 +100,7 @@ public class DashBoardService {
             labelCounts.put(label, count);
         }
 
-        // 발생 횟수를 기준으로 상위 3개 선택
+        // 발생 횟수를 기준으로 상ㄷ위 3개 선택
         return labelCounts.entrySet().stream()
             .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
             .limit(3)

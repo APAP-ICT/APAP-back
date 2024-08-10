@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/notifications")
+@RequestMapping("/api/tokens")
 public class FCMTokenController {
 
     private final FCMService fcmService;
 
-    @PostMapping("/token")
+    @PostMapping
     @Description("FCM 토큰 받아서 DB 에 저장")
     public void getFCMToken(@Valid @RequestBody FCMTokenRequest fcmTokenRequest) {
         fcmService.saveToken(fcmTokenRequest);

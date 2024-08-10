@@ -43,7 +43,8 @@ public class InfoService {
      * 모든 객체 탐지 정보 조회
      * 시작 & 끝 기간, 카메라, 이상상황을 조건으로 받음 - null 인 경우엔 조건을 적용하지 않음
      */
-    public List<Info> getInfos(LocalDateTime startDate, LocalDateTime endDate, String cameraName, String label) {
+    public List<Info> getInfos(LocalDateTime startDate, LocalDateTime endDate, String cameraName,
+        String label) {
         Specification<Info> spec = Specification.where(InfoSpecifications.hasStartDate(startDate))
             .and(InfoSpecifications.hasEndDate(endDate))
             .and(InfoSpecifications.hasCameraName(cameraName))
@@ -58,7 +59,10 @@ public class InfoService {
     @Transactional
     public void processInfo(InfoRequest infoRequest) {
         List<FCMToken> fcmTokens = fcmTokenRepository.findAll();
-        List<String> tokens = fcmTokens.stream().map(fcmToken -> fcmToken.getToken()).toList();
+        List<String> tokens = fcmTokens.stream()
+            .map(FCMToken::getToken)
+            .toList();
+
         // 현재 라벨과 타임스탬프
         String label = infoRequest.label();
         LocalDateTime currentTimestamp = infoRequest.localDateTime();
@@ -70,23 +74,22 @@ public class InfoService {
             Duration duration = Duration.between(lastTimestamp, currentTimestamp);
             // 같은 라벨이 30초 이상 지났다면 알림 전송 - "지속"
             if (duration.getSeconds() >= 30) {
-                Info savedInfo = save(infoRequest.cameraName(), infoRequest.localDateTime(),
-                    infoRequest.label(),
+                Info savedInfo = save(infoRequest.cameraName(), currentTimestamp, label,
                     infoRequest.base64Image());
                 fcmService.sendNotificationToMany(tokens, infoRequest, savedInfo, false);
                 infoTracker.updateTimestamp(label, currentTimestamp);
             }
             return;
         }
-        // 새로운 라벨에 대한 정보 저장
-        Info savedInfo = save(infoRequest.cameraName(), infoRequest.localDateTime(),
-            infoRequest.label(),
-            infoRequest.base64Image());
-        // 새로운 라벨이라면 즉시 알림 전송 - "발생"
+
+        // 새로운 라벨에 대한 정보 저장 및 즉시 알림 전송 - "발생"
+        Info savedInfo = save(infoRequest.cameraName(), currentTimestamp, label, infoRequest.base64Image());
         fcmService.sendNotificationToMany(tokens, infoRequest, savedInfo, true);
+
         // 현재 라벨에 대한 타임스탬프 업데이트
         infoTracker.updateTimestamp(label, currentTimestamp);
     }
+
 
     public Info getInfo(Long infoId) {
         Info info = infoRepository.findById(infoId)
