@@ -2,6 +2,7 @@
 //
 //import com.example.apapbackend.gemini.dto.GeminiRequest;
 //import com.example.apapbackend.gemini.dto.GeminiResponse;
+//import lombok.RequiredArgsConstructor;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.stereotype.Service;
 //
@@ -11,8 +12,7 @@
 //    public static final String GEMINI_ULTIMATE = "gemini-ultimate";
 //    public static final String GEMINI_PRO_VISION = "gemini-pro-vision";
 //
-//    @Autowired
-//    private final GeminiInterface geminiInterface;
+//    @Autowired private final GeminiInterface geminiInterface;
 //
 //    private GeminiResponse getCompletion(GeminiRequest request) {
 //        return geminiInterface.getCompletion(GEMINI_PRO, request);
