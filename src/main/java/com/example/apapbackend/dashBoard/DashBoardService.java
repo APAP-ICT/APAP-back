@@ -40,8 +40,15 @@ public class DashBoardService {
         return new DashBoardTopResponse(mostFrequentLabel, mostFrequentCamera, situationCount);
     }
 
+    public DashBoardBottomResponse getBottomInfo() {
+        Map<LocalDate, List<Entry<String, Long>>> topLabelsForLast3Days = getDailyTopLabelsAndCountsForLast3Days();
+        Map<String, Long> topThreeLabelsForLast3Days = getTopLabelsAndCountsForLast3Days();
+
+        return new DashBoardBottomResponse(topLabelsForLast3Days, topThreeLabelsForLast3Days);
+    }
+
     @Transactional(readOnly = true)
-    public Map<LocalDate, List<Map.Entry<String, Long>>> getTopLabelsForLast3Days() {
+    public Map<LocalDate, List<Map.Entry<String, Long>>> getDailyTopLabelsAndCountsForLast3Days() {
         // 최근 3일 계산
         LocalDate now = LocalDate.now();
         LocalDate threeDaysAgo = now.minusDays(2); // 오늘 포함하여 최근 3일
@@ -57,30 +64,32 @@ public class DashBoardService {
         Map<LocalDate, List<Map.Entry<String, Long>>> dailyTopLabels = new HashMap<>();
 
         for (Object[] result : results) {
-            LocalDateTime dateTime = (LocalDateTime) result[0];
-            String label = (String) result[1];
-            Long count = ((Number) result[2]).longValue();
+            LocalDateTime dateTime = (LocalDateTime) result[0]; // 일자 및 시간 정보 추출
+            String label = (String) result[1]; // 이상 상황 라벨값 추출
+            Long count = ((Number) result[2]).longValue(); // 해당 일자 및 이상 상황의 발생 횟수 추출
 
+            // LocalDate 객체를 추출하여, 일자별(key: LocalDate)로 Map에 이상 상황의 종류와 발생 횟수를 저장
             LocalDate date = dateTime.toLocalDate();
-            dailyTopLabels.putIfAbsent(date, new ArrayList<>());
-            dailyTopLabels.get(date).add(new AbstractMap.SimpleEntry<>(label, count));
+            dailyTopLabels.putIfAbsent(date, new ArrayList<>()); // 일자별로 리스트 초기화 (없을 경우)
+            dailyTopLabels.get(date).add(new AbstractMap.SimpleEntry<>(label, count)); // 리스트에 라벨과 발생 횟수 추가
         }
 
-        // 각 날짜별로 가장 많이 발생한 이상 상황 4개 선택
+
+        // 각 날짜별로 발생 횟수가 가장 많은 이상 상황 4개를 선택
         Map<LocalDate, List<Map.Entry<String, Long>>> topLabelsPerDay = dailyTopLabels.entrySet().stream()
             .collect(Collectors.toMap(
-                Map.Entry::getKey,
-                entry -> entry.getValue().stream()
-                    .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
-                    .limit(4)
-                    .collect(Collectors.toList())
+                Map.Entry::getKey, // 날짜(LocalDate)를 key로 유지
+                entry -> entry.getValue().stream() // 각 날짜별 이상 상황 발생 횟수(Map.Entry<String, Long>)를 스트림으로 처리
+                    .sorted(Map.Entry.<String, Long>comparingByValue().reversed()) // 발생 횟수를 기준으로 내림차순 정렬하여
+                    .limit(4) // 상위 4개의 이상 상황만 선택
+                    .collect(Collectors.toList()) // 선택된 이상 상황들을 리스트로 변환하여 해당 날짜의 value로 저장
             ));
 
         return topLabelsPerDay;
     }
 
     @Transactional(readOnly = true)
-    public Map<String, Long> getTopThreeLabelsForLast3Days() {
+    public Map<String, Long> getTopLabelsAndCountsForLast3Days() {
         // 최근 3일 계산
         LocalDate now = LocalDate.now();
         LocalDate threeDaysAgo = now.minusDays(2); // 오늘 포함하여 최근 3일
@@ -100,7 +109,7 @@ public class DashBoardService {
             labelCounts.put(label, count);
         }
 
-        // 발생 횟수를 기준으로 상ㄷ위 3개 선택
+        // 발생 횟수를 기준으로 상위 3개 선택
         return labelCounts.entrySet().stream()
             .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
             .limit(3)
@@ -274,12 +283,5 @@ public class DashBoardService {
     private LocalDateTime getEndOfMonth(int year, Month month) {
         LocalDate lastDayOfMonth = LocalDate.of(year, month, month.length(LocalDate.now().isLeapYear()));
         return LocalDateTime.of(lastDayOfMonth, LocalTime.MAX);
-    }
-
-    public DashBoardBottomResponse getBottomInfo() {
-        Map<LocalDate, List<Entry<String, Long>>> topLabelsForLast3Days = getTopLabelsForLast3Days();
-        Map<String, Long> topThreeLabelsForLast3Days = getTopThreeLabelsForLast3Days();
-
-        return new DashBoardBottomResponse(topLabelsForLast3Days, topThreeLabelsForLast3Days);
     }
 }
