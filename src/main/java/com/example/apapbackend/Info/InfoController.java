@@ -1,6 +1,7 @@
 package com.example.apapbackend.Info;
 
 import com.example.apapbackend.Info.dto.InfoRequest;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,6 +28,10 @@ public class InfoController {
      * 탐지 결과를 받아서 메시지 전송
      */
     @PostMapping
+    @Operation(
+        summary = "AI 서버로부터 이상 상황 정보 받음, 조건부 알림 전송",
+        description = "이상 상황의 조건에 따라 조건부 알림을 전송합니다."
+    )
     public ResponseEntity postInfo(@Valid @RequestBody InfoRequest infoRequest) {
         // 조건에 따라 메시지 전송
         infoService.processInfo(infoRequest);
@@ -37,6 +42,7 @@ public class InfoController {
      * 특정 객체 탐지 정보 조회
      */
     @GetMapping("{infoId}")
+    @Operation(summary = "객체 탐지 정보 조회", description = "객체 탐지 정보를 조회합니다.")
     public ResponseEntity<Info> getInfo(@PathVariable("infoId") Long infoId) {
         Info info = infoService.getInfo(infoId);
         return ResponseEntity.ok(info);
@@ -47,6 +53,10 @@ public class InfoController {
      * 시작 & 끝 기간, 카메라, 이상상황을 조건으로 받음 - null 인 경우엔 조건을 적용하지 않음
      */
     @GetMapping
+    @Operation(
+        summary = "조건별 객체 탐지 정보 목록 조회",
+        description = "쿼리 파라미터 조건 별 객체 탐지 정보 목록을 조회합니다."
+    )
     public ResponseEntity<List<Info>> getInfos(
         @RequestParam(required = false) LocalDateTime startDate,
         @RequestParam(required = false) LocalDateTime endDate,

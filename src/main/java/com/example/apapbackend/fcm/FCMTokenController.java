@@ -1,6 +1,7 @@
 package com.example.apapbackend.fcm;
 
 import com.example.apapbackend.fcm.dto.FCMTokenRequest;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Description;
@@ -17,7 +18,7 @@ public class FCMTokenController {
     private final FCMService fcmService;
 
     @PostMapping
-    @Description("FCM 토큰 받아서 DB 에 저장")
+    @Operation(summary = "이메일과 함께 토큰 전송", description = "해당 이메일의 토큰을 중복을 검사하여 저장합니다.")
     public void getFCMToken(@Valid @RequestBody FCMTokenRequest fcmTokenRequest) {
         fcmService.saveToken(fcmTokenRequest);
     }
