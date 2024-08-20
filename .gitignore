@@ -20,7 +20,7 @@ bin/
 ### IntelliJ IDEA ###
 application.properties
 ### firebase secret key ###
-firebase-service-account
+firebase-service-account.json
 
 .idea
 *.iws
