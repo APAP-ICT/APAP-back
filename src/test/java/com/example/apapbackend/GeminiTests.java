@@ -1,8 +1,5 @@
 package com.example.apapbackend;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
 import com.amazonaws.services.s3.AmazonS3;
 import com.example.apapbackend.global.gemini.GeminiRequest;
 import com.example.apapbackend.global.gemini.GeminiService;
@@ -18,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 public class GeminiTests {
+
     @Autowired
     private GeminiService service;
     @Autowired
@@ -49,6 +47,7 @@ public class GeminiTests {
     }
 
     @Test
+    @Description("S3 객체 주소를 통해 gemini 설명 추출")
     public void testGetDescription() throws IOException {
         // 준비 단계: S3 객체 Mock 설정
         String s3ObjUrl = "https://apap-back.s3.ap-northeast-2.amazonaws.com/01763b79-9c8b-49a3-8bdc-474dbca72333";

@@ -6,7 +6,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
-import org.checkerframework.checker.units.qual.C;
 
 @Entity
 public class Info {
@@ -25,7 +24,8 @@ public class Info {
     @Column
     public String description;
 
-    public Info(String cameraName, LocalDateTime localDateTime, String label, String imageUrl, String description) {
+    public Info(String cameraName, LocalDateTime localDateTime, String label, String imageUrl,
+        String description) {
         this.cameraName = cameraName;
         this.localDateTime = localDateTime;
         this.label = label;

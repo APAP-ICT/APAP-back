@@ -7,9 +7,11 @@ import java.time.LocalDateTime;
 import org.springframework.data.jpa.domain.Specification;
 
 public class InfoSpecifications {
+
     public static Specification<Info> hasStartDate(LocalDateTime startDate) {
         return (Root<Info> root, CriteriaQuery<?> query, CriteriaBuilder cb) ->
-            startDate == null ? cb.conjunction() : cb.greaterThanOrEqualTo(root.get("startDate"), startDate);
+            startDate == null ? cb.conjunction()
+                : cb.greaterThanOrEqualTo(root.get("startDate"), startDate);
     }
 
     public static Specification<Info> hasEndDate(LocalDateTime endDate) {

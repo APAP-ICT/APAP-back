@@ -7,6 +7,7 @@ import org.springframework.web.service.annotation.PostExchange;
 
 @HttpExchange("/v1beta/models")
 public interface GeminiInterface {
+
     @PostExchange("{model}:generateContent")
     GeminiResponse getCompletion(
         @PathVariable String model,

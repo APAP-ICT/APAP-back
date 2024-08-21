@@ -10,17 +10,25 @@ public record DashBoardTopResponse(
         String name, // 이상 상황 라벨
         int changePercentage, // 증감율
         ChangeType changeType // 증감여부
-    ) {}
+    ) {
+
+    }
+
     public record Camera(
         String name, // 카메라 이름
         int changePercentage, // 증감율
         ChangeType changeType // 증감여부
-    ) {}
+    ) {
+
+    }
+
     public record SituationCount(
         int count, // 직전 주 대비 일 평균 이상 상황 발생 횟수
         int changePercentage, // 증감율
         ChangeType changeType // 증감여부
-    ) {}
+    ) {
+
+    }
 
     public enum ChangeType {
         INCREASE,    // 증가

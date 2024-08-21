@@ -27,9 +27,10 @@ public class FCMService {
     /**
      * FCMToken 을 이용한 푸시 알림 전송
      */
-    public void sendNotificationToMany(List<String> tokens, InfoRequest infoRequest, Info savedInfo, Boolean isNew) {
+    public void sendNotificationToMany(List<String> tokens, InfoRequest infoRequest, Info savedInfo,
+        Boolean isNew) {
         String newOrContinue = isNew ? " 발생" : " 지속중";
-        
+
         Map<String, String> data = new HashMap<>();
         data.put("infoId", String.valueOf(savedInfo.getId())); // 이상 상황(Info) ID
         data.put("isNew", Boolean.toString(isNew)); // 이상 상황 발생 or 지속 여부
@@ -38,8 +39,10 @@ public class FCMService {
         MulticastMessage fcmMessage = MulticastMessage.builder()
             .addAllTokens(tokens)
             .setNotification(com.google.firebase.messaging.Notification.builder()
-                .setTitle(infoRequest.cameraName() + "에서 " + infoRequest.label() + newOrContinue) // 제목 ex) E-114 에서 안전모 미착용 발생
-                .setBody(infoRequest.localDateTime().format(DateTimeFormatter.ofPattern("MM월 dd일 HH시 mm분"))) // 발생 시각 ex) 7월 7일 7시 7분
+                .setTitle(infoRequest.cameraName() + "에서 " + infoRequest.label()
+                    + newOrContinue) // 제목 ex) E-114 에서 안전모 미착용 발생
+                .setBody(infoRequest.localDateTime().format(
+                    DateTimeFormatter.ofPattern("MM월 dd일 HH시 mm분"))) // 발생 시각 ex) 7월 7일 7시 7분
                 .setImage(savedInfo.getImageUrl()) // 이상 상황 이미지 주소 URL
                 .build())
             .putAllData(data)
@@ -71,8 +74,7 @@ public class FCMService {
     }
 
     /**
-     * 이메일과 쌍으로 토큰 저장
-     * 해당 이메일에 토큰 이미 존재할 경우 -> 토큰 업데이트
+     * 이메일과 쌍으로 토큰 저장 해당 이메일에 토큰 이미 존재할 경우 -> 토큰 업데이트
      */
     @Transactional
     public void saveToken(FCMTokenRequest tokenRequest) {

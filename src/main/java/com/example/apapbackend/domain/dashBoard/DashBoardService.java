@@ -1,6 +1,8 @@
 package com.example.apapbackend.domain.dashBoard;
 
-import static com.example.apapbackend.domain.dashBoard.dto.DashBoardTopResponse.*;
+import static com.example.apapbackend.domain.dashBoard.dto.DashBoardTopResponse.Camera;
+import static com.example.apapbackend.domain.dashBoard.dto.DashBoardTopResponse.Situation;
+import static com.example.apapbackend.domain.dashBoard.dto.DashBoardTopResponse.SituationCount;
 
 import com.example.apapbackend.domain.Info.Info;
 import com.example.apapbackend.domain.Info.InfoRepository;
@@ -71,16 +73,19 @@ public class DashBoardService {
             // LocalDate 객체를 추출하여, 일자별(key: LocalDate)로 Map에 이상 상황의 종류와 발생 횟수를 저장
             LocalDate date = dateTime.toLocalDate();
             dailyTopLabels.putIfAbsent(date, new ArrayList<>()); // 일자별로 리스트 초기화 (없을 경우)
-            dailyTopLabels.get(date).add(new AbstractMap.SimpleEntry<>(label, count)); // 리스트에 라벨과 발생 횟수 추가
+            dailyTopLabels.get(date)
+                .add(new AbstractMap.SimpleEntry<>(label, count)); // 리스트에 라벨과 발생 횟수 추가
         }
 
-
         // 각 날짜별로 발생 횟수가 가장 많은 이상 상황 4개를 선택
-        Map<LocalDate, List<Map.Entry<String, Long>>> topLabelsPerDay = dailyTopLabels.entrySet().stream()
+        Map<LocalDate, List<Map.Entry<String, Long>>> topLabelsPerDay = dailyTopLabels.entrySet()
+            .stream()
             .collect(Collectors.toMap(
                 Map.Entry::getKey, // 날짜(LocalDate)를 key로 유지
-                entry -> entry.getValue().stream() // 각 날짜별 이상 상황 발생 횟수(Map.Entry<String, Long>)를 스트림으로 처리
-                    .sorted(Map.Entry.<String, Long>comparingByValue().reversed()) // 발생 횟수를 기준으로 내림차순 정렬하여
+                entry -> entry.getValue()
+                    .stream() // 각 날짜별 이상 상황 발생 횟수(Map.Entry<String, Long>)를 스트림으로 처리
+                    .sorted(Map.Entry.<String, Long>comparingByValue()
+                        .reversed()) // 발생 횟수를 기준으로 내림차순 정렬하여
                     .limit(4) // 상위 4개의 이상 상황만 선택
                     .collect(Collectors.toList()) // 선택된 이상 상황들을 리스트로 변환하여 해당 날짜의 value로 저장
             ));
@@ -140,7 +145,8 @@ public class DashBoardService {
         LocalDateTime lastWeekEnd = getEndOfWeek(currentYear, lastWeek);
 
         // 현재 주차 및 지난주 주차의 정보 조회
-        List<Info> currentWeekInfos = infoRepository.findByDateRange(currentWeekStart, currentWeekEnd);
+        List<Info> currentWeekInfos = infoRepository.findByDateRange(currentWeekStart,
+            currentWeekEnd);
         List<Info> lastWeekInfos = infoRepository.findByDateRange(lastWeekStart, lastWeekEnd);
 
         // 각 주차에서의 이상 상황 발생 횟수 계산
@@ -160,7 +166,8 @@ public class DashBoardService {
         long lastCount = lastWeekCounts.getOrDefault(mostFrequentLabel, 0L);
 
         // 지난 주 대비 증감 퍼센트 계산
-        double percentageChange = (lastCount == 0) ? 100.0 : ((double) (currentCount - lastCount) / lastCount) * 100;
+        double percentageChange =
+            (lastCount == 0) ? 100.0 : ((double) (currentCount - lastCount) / lastCount) * 100;
         ChangeType changeType =
             (percentageChange > 0) ? ChangeType.INCREASE
                 : (percentageChange < 0) ? ChangeType.DECREASE
@@ -187,7 +194,8 @@ public class DashBoardService {
         LocalDateTime lastMonthEnd = getEndOfMonth(currentYear, lastMonth);
 
         // 현재 달 및 직전 달의 정보 조회
-        List<Info> currentMonthInfos = infoRepository.findByDateRange(currentMonthStart, currentMonthEnd);
+        List<Info> currentMonthInfos = infoRepository.findByDateRange(currentMonthStart,
+            currentMonthEnd);
         List<Info> lastMonthInfos = infoRepository.findByDateRange(lastMonthStart, lastMonthEnd);
 
         // 현재 달과 직전 달에서의 카메라별 이상 상황 발생 횟수 계산
@@ -207,8 +215,10 @@ public class DashBoardService {
         long lastCount = lastMonthCameraCounts.getOrDefault(mostFrequentCamera, 0L);
 
         // 증감 퍼센트 계산
-        double percentageChange = (lastCount == 0) ? 100.0 : ((double) (currentCount - lastCount) / lastCount) * 100;
-        ChangeType changeType = (percentageChange > 0) ? ChangeType.INCREASE : (percentageChange < 0) ? ChangeType.DECREASE : ChangeType.NO_CHANGE;
+        double percentageChange =
+            (lastCount == 0) ? 100.0 : ((double) (currentCount - lastCount) / lastCount) * 100;
+        ChangeType changeType = (percentageChange > 0) ? ChangeType.INCREASE
+            : (percentageChange < 0) ? ChangeType.DECREASE : ChangeType.NO_CHANGE;
 
         // 결과 반환
         return new Camera(mostFrequentCamera, (int) percentageChange, changeType);
@@ -233,19 +243,25 @@ public class DashBoardService {
         LocalDateTime lastWeekEnd = getEndOfWeek(currentYear, lastWeek);
 
         // 현재 주차 및 지난주 주차의 일별 이상 상황 발생 횟수 조회
-        Map<LocalDateTime, Long> currentWeekDailyCounts = infoRepository.findDailyCountsByDateRange(currentWeekStart, currentWeekEnd);
-        Map<LocalDateTime, Long> lastWeekDailyCounts = infoRepository.findDailyCountsByDateRange(lastWeekStart, lastWeekEnd);
+        Map<LocalDateTime, Long> currentWeekDailyCounts = infoRepository.findDailyCountsByDateRange(
+            currentWeekStart, currentWeekEnd);
+        Map<LocalDateTime, Long> lastWeekDailyCounts = infoRepository.findDailyCountsByDateRange(
+            lastWeekStart, lastWeekEnd);
 
         // 현재 주차와 지난주 주차의 일별 발생 횟수 평균 계산
         Map<LocalDate, Long> currentWeekCounts = getDailyCounts(currentWeekDailyCounts);
         Map<LocalDate, Long> lastWeekCounts = getDailyCounts(lastWeekDailyCounts);
 
-        double currentWeekAverage = currentWeekCounts.values().stream().mapToLong(Long::longValue).average().orElse(0);
-        double lastWeekAverage = lastWeekCounts.values().stream().mapToLong(Long::longValue).average().orElse(0);
+        double currentWeekAverage = currentWeekCounts.values().stream().mapToLong(Long::longValue)
+            .average().orElse(0);
+        double lastWeekAverage = lastWeekCounts.values().stream().mapToLong(Long::longValue)
+            .average().orElse(0);
 
         // 증감율 계산
-        double percentageChange = (lastWeekAverage == 0) ? 100.0 : ((currentWeekAverage - lastWeekAverage) / lastWeekAverage) * 100;
-        ChangeType changeType = (percentageChange > 0) ? ChangeType.INCREASE : (percentageChange < 0) ? ChangeType.DECREASE : ChangeType.NO_CHANGE;
+        double percentageChange = (lastWeekAverage == 0) ? 100.0
+            : ((currentWeekAverage - lastWeekAverage) / lastWeekAverage) * 100;
+        ChangeType changeType = (percentageChange > 0) ? ChangeType.INCREASE
+            : (percentageChange < 0) ? ChangeType.DECREASE : ChangeType.NO_CHANGE;
 
         // 결과물 반환
         return new SituationCount((int) currentWeekAverage, (int) percentageChange, changeType);
@@ -259,6 +275,7 @@ public class DashBoardService {
             .collect(Collectors.groupingBy(entry -> entry.getKey().toLocalDate(),
                 Collectors.summingLong(Map.Entry::getValue)));
     }
+
     private LocalDateTime getStartOfDay(LocalDate date) {
         return LocalDateTime.of(date, LocalTime.MIN);
     }
@@ -266,6 +283,7 @@ public class DashBoardService {
     private LocalDateTime getEndOfDay(LocalDate date) {
         return LocalDateTime.of(date, LocalTime.MAX);
     }
+
     private LocalDateTime getStartOfWeek(int year, int week) {
         LocalDate startOfWeek = LocalDate.of(year, 1, 1)
             .with(WeekFields.ISO.weekOfYear(), week)
@@ -273,15 +291,19 @@ public class DashBoardService {
             .with(java.time.DayOfWeek.MONDAY);
         return startOfWeek.atStartOfDay();
     }
+
     private LocalDateTime getEndOfWeek(int year, int week) {
         LocalDateTime startOfWeek = getStartOfWeek(year, week);
         return startOfWeek.plusDays(6).with(LocalTime.MAX);
     }
+
     private LocalDateTime getStartOfMonth(int year, Month month) {
         return LocalDateTime.of(year, month, 1, 0, 0);
     }
+
     private LocalDateTime getEndOfMonth(int year, Month month) {
-        LocalDate lastDayOfMonth = LocalDate.of(year, month, month.length(LocalDate.now().isLeapYear()));
+        LocalDate lastDayOfMonth = LocalDate.of(year, month,
+            month.length(LocalDate.now().isLeapYear()));
         return LocalDateTime.of(lastDayOfMonth, LocalTime.MAX);
     }
 }

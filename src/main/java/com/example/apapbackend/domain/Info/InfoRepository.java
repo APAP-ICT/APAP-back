@@ -23,9 +23,9 @@ public interface InfoRepository extends JpaRepository<Info, Long>, JpaSpecificat
      * 특정 기간 내 일별 이상 상황 발생 횟수 조회
      */
     @Query("SELECT FUNCTION('DATE', i.localDateTime) AS date, COUNT(i) AS count " +
-           "FROM Info i " +
-           "WHERE i.localDateTime BETWEEN :startDate AND :endDate " +
-           "GROUP BY FUNCTION('DATE', i.localDateTime)")
+        "FROM Info i " +
+        "WHERE i.localDateTime BETWEEN :startDate AND :endDate " +
+        "GROUP BY FUNCTION('DATE', i.localDateTime)")
     Map<LocalDateTime, Long> findDailyCountsByDateRange(@Param("startDate") LocalDateTime startDate,
         @Param("endDate") LocalDateTime endDate);
 
@@ -34,10 +34,10 @@ public interface InfoRepository extends JpaRepository<Info, Long>, JpaSpecificat
      * 특정 기간 내 일별, 이상 상황별 발생 횟수 조회 - 횟수 내림 차순 기준
      */
     @Query("SELECT FUNCTION('DATE', i.localDateTime) AS date, i.label, COUNT(i) AS count " +
-           "FROM Info i " +
-           "WHERE i.localDateTime BETWEEN :startDate AND :endDate " +
-           "GROUP BY FUNCTION('DATE', i.localDateTime), i.label " +
-           "ORDER BY FUNCTION('DATE', i.localDateTime), COUNT(i) DESC")
+        "FROM Info i " +
+        "WHERE i.localDateTime BETWEEN :startDate AND :endDate " +
+        "GROUP BY FUNCTION('DATE', i.localDateTime), i.label " +
+        "ORDER BY FUNCTION('DATE', i.localDateTime), COUNT(i) DESC")
     List<Object[]> findDailyLabelCountsByDateRange(
         @Param("startDate") LocalDateTime startDate,
         @Param("endDate") LocalDateTime endDate
@@ -47,10 +47,10 @@ public interface InfoRepository extends JpaRepository<Info, Long>, JpaSpecificat
      * 특정 기간 내 발생한 이상 상황의 종류와 횟수 조회 - 횟수 내림 차순 기준
      */
     @Query("SELECT i.label, COUNT(i) AS count " +
-           "FROM Info i " +
-           "WHERE i.localDateTime BETWEEN :startDate AND :endDate " +
-           "GROUP BY i.label " +
-           "ORDER BY COUNT(i) DESC")
+        "FROM Info i " +
+        "WHERE i.localDateTime BETWEEN :startDate AND :endDate " +
+        "GROUP BY i.label " +
+        "ORDER BY COUNT(i) DESC")
     List<Object[]> findLabelCountsByDateRange(
         @Param("startDate") LocalDateTime startDate,
         @Param("endDate") LocalDateTime endDate

@@ -42,7 +42,9 @@ public class GeminiRequest {
         private List<Part> parts;
     }
 
-    interface Part {}
+    interface Part {
+
+    }
 
     @Getter
     @AllArgsConstructor

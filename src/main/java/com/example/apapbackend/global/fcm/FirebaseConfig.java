@@ -14,10 +14,12 @@ public class FirebaseConfig {
     @Bean
     public FirebaseApp firebaseApp() throws IOException {
         // 클래스패스에서 파일을 읽어옵니다.
-        ClassPathResource serviceAccountResource = new ClassPathResource("firebase-service-account.json");
+        ClassPathResource serviceAccountResource = new ClassPathResource(
+            "firebase-service-account.json");
 
         // 리소스를 InputStream으로 읽어옵니다.
-        GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccountResource.getInputStream());
+        GoogleCredentials credentials = GoogleCredentials.fromStream(
+            serviceAccountResource.getInputStream());
 
         FirebaseOptions options = FirebaseOptions.builder()
             .setCredentials(credentials)

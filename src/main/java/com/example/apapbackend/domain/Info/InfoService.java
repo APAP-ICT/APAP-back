@@ -47,8 +47,7 @@ public class InfoService {
     }
 
     /**
-     * 모든 객체 탐지 정보 조회
-     * 시작 & 끝 기간, 카메라, 이상상황을 조건으로 받음 - null 인 경우엔 조건을 적용하지 않음
+     * 모든 객체 탐지 정보 조회 시작 & 끝 기간, 카메라, 이상상황을 조건으로 받음 - null 인 경우엔 조건을 적용하지 않음
      */
     public List<Info> getInfos(LocalDateTime startDate, LocalDateTime endDate, String cameraName,
         String label) {
@@ -93,7 +92,8 @@ public class InfoService {
 
         // 새로운 라벨에 대한 정보 저장 및 즉시 알림 전송 - "발생"
         log.info("new label");
-        Info savedInfo = save(infoRequest.cameraName(), currentTimestamp, label, infoRequest.base64Image());
+        Info savedInfo = save(infoRequest.cameraName(), currentTimestamp, label,
+            infoRequest.base64Image());
         fcmService.sendNotificationToMany(tokens, infoRequest, savedInfo, true);
 
         // 현재 라벨에 대한 타임스탬프 업데이트
