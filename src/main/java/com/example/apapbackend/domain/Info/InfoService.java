@@ -83,8 +83,12 @@ public class InfoService {
                 log.info("same label passed for 30 sec more");
                 Info savedInfo = save(infoRequest.cameraName(), currentTimestamp, label,
                     infoRequest.base64Image());
-                fcmService.sendNotificationToMany(tokens, infoRequest, savedInfo, false);
                 infoTracker.updateTimestamp(label, currentTimestamp);
+                if(tokens.isEmpty()){
+                    log.info("토큰이 존재하지 않으므로 알림을 전송하지 않습니다.");
+                    return;
+                }
+                fcmService.sendNotificationToMany(tokens, infoRequest, savedInfo, false);
             }
             log.info("same label not passed 30 secs");
             return;
@@ -94,10 +98,13 @@ public class InfoService {
         log.info("new label");
         Info savedInfo = save(infoRequest.cameraName(), currentTimestamp, label,
             infoRequest.base64Image());
-        fcmService.sendNotificationToMany(tokens, infoRequest, savedInfo, true);
-
         // 현재 라벨에 대한 타임스탬프 업데이트
         infoTracker.updateTimestamp(label, currentTimestamp);
+        if(tokens.isEmpty()){
+            log.info("토큰이 존재하지 않으므로 알림을 전송하지 않습니다.");
+            return;
+        }
+        fcmService.sendNotificationToMany(tokens, infoRequest, savedInfo, true);
         log.info("send message finished");
     }
 
