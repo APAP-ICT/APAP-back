@@ -4,6 +4,7 @@ import com.example.apapbackend.domain.Info.dto.InfoRequest;
 import com.example.apapbackend.domain.fcm.FCMService;
 import com.example.apapbackend.domain.fcm.FCMToken;
 import com.example.apapbackend.domain.fcm.FCMTokenRepository;
+import com.example.apapbackend.global.gemini.GeminiService;
 import com.example.apapbackend.global.s3.S3ImageFileUploader;
 import java.io.IOException;
 import java.time.Duration;
@@ -25,6 +26,7 @@ public class InfoService {
     private final InfoTracker infoTracker;
     private final FCMService fcmService;
     private final FCMTokenRepository fcmTokenRepository;
+    private final GeminiService geminiService;
 
     /**
      * 객체 정보 저장
@@ -33,7 +35,10 @@ public class InfoService {
         String base64Image) {
         try {
             String objUrl = s3ImageFileUploader.uploadImageFromUrlToS3(base64Image);
-            Info info = new Info(cameraName, localDateTime, label, objUrl);
+
+            String description = geminiService.getDescription(objUrl);
+
+            Info info = new Info(cameraName, localDateTime, label, objUrl, description);
             return infoRepository.save(info);
         } catch (IOException e) {
             e.printStackTrace();

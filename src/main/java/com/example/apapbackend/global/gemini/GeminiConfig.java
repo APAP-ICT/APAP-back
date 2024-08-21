@@ -1,6 +1,5 @@
 package com.example.apapbackend.global.gemini;
 
-import com.example.apapbackend.domain.gemini.GeminiInterface;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

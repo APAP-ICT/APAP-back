@@ -1,4 +1,4 @@
-package com.example.apapbackend.domain.gemini;
+package com.example.apapbackend.global.gemini;
 
 
 import java.util.List;

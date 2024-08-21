@@ -1,7 +1,7 @@
 package com.example.apapbackend;
 
-import com.example.apapbackend.domain.gemini.GeminiRequest;
-import com.example.apapbackend.domain.gemini.GeminiService;
+import com.example.apapbackend.global.gemini.GeminiRequest;
+import com.example.apapbackend.global.gemini.GeminiService;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;

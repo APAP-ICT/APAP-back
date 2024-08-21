@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
+import org.checkerframework.checker.units.qual.C;
 
 @Entity
 public class Info {
@@ -21,12 +22,15 @@ public class Info {
     public String label;
     @Column
     public String imageUrl;
+    @Column
+    public String description;
 
-    public Info(String cameraName, LocalDateTime localDateTime, String label, String imageUrl) {
+    public Info(String cameraName, LocalDateTime localDateTime, String label, String imageUrl, String description) {
         this.cameraName = cameraName;
         this.localDateTime = localDateTime;
         this.label = label;
         this.imageUrl = imageUrl;
+        this.description = description;
     }
 
     public Info() {
@@ -67,5 +71,17 @@ public class Info {
 
     public String getCameraName() {
         return cameraName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setCameraName(String cameraName) {
+        this.cameraName = cameraName;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

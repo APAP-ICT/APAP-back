@@ -1,4 +1,4 @@
-package com.example.apapbackend.domain.gemini;
+package com.example.apapbackend.global.gemini;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
