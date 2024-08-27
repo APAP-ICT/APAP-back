@@ -3,6 +3,7 @@ package com.example.apapbackend.domain.Info;
 import com.example.apapbackend.domain.Info.dto.InfoRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -57,8 +58,8 @@ public class InfoController {
         description = "쿼리 파라미터 조건 별 객체 탐지 정보 목록을 조회합니다."
     )
     public ResponseEntity<List<Info>> getInfos(
-        @RequestParam(required = false) LocalDateTime startDate,
-        @RequestParam(required = false) LocalDateTime endDate,
+        @RequestParam(required = false) LocalDate startDate,
+        @RequestParam(required = false) LocalDate endDate,
         @RequestParam(required = false) String cameraName,
         @RequestParam(required = false) String label
     ) {

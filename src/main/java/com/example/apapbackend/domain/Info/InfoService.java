@@ -8,6 +8,7 @@ import com.example.apapbackend.global.gemini.GeminiService;
 import com.example.apapbackend.global.s3.S3ImageFileUploader;
 import java.io.IOException;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -49,8 +50,7 @@ public class InfoService {
     /**
      * 모든 객체 탐지 정보 조회 시작 & 끝 기간, 카메라, 이상상황을 조건으로 받음 - null 인 경우엔 조건을 적용하지 않음
      */
-    public List<Info> getInfos(LocalDateTime startDate, LocalDateTime endDate, String cameraName,
-        String label) {
+    public List<Info> getInfos(LocalDate startDate, LocalDate endDate, String cameraName, String label) {
         Specification<Info> spec = Specification.where(InfoSpecifications.hasStartDate(startDate))
             .and(InfoSpecifications.hasEndDate(endDate))
             .and(InfoSpecifications.hasCameraName(cameraName))
@@ -63,7 +63,7 @@ public class InfoService {
      * 조건에 따라 메시지 전송
      */
     @Transactional
-    public void processInfo(InfoRequest infoRequest) {
+    public synchronized void processInfo(InfoRequest infoRequest) {
         List<FCMToken> fcmTokens = fcmTokenRepository.findAll();
         List<String> tokens = fcmTokens.stream()
             .map(FCMToken::getToken)
@@ -79,16 +79,19 @@ public class InfoService {
         if (lastTimestamp != null) {
             Duration duration = Duration.between(lastTimestamp, currentTimestamp);
             // 같은 라벨이 30초 이상 지났다면 알림 전송 - "지속"
+            log.info("currentTimeStamp: {}, lastTimeStamp: {}, duration.getSeconds(): {}", currentTimestamp, lastTimestamp, duration.getSeconds());
             if (duration.getSeconds() >= 30) {
                 log.info("same label passed for 30 sec more");
                 Info savedInfo = save(infoRequest.cameraName(), currentTimestamp, label,
                     infoRequest.base64Image());
                 infoTracker.updateTimestamp(label, currentTimestamp);
                 if(tokens.isEmpty()){
-                    log.info("토큰이 존재하지 않으므로 알림을 전송하지 않습니다.");
+                    log.info("[기존 이상상황] 토큰이 존재하지 않으므로 알림을 전송하지 않습니다.");
                     return;
                 }
                 fcmService.sendNotificationToMany(tokens, infoRequest, savedInfo, false);
+                log.info("[기존 이상상황] 알림을 전송 완료.");
+                return;
             }
             log.info("same label not passed 30 secs");
             return;
@@ -101,11 +104,11 @@ public class InfoService {
         // 현재 라벨에 대한 타임스탬프 업데이트
         infoTracker.updateTimestamp(label, currentTimestamp);
         if(tokens.isEmpty()){
-            log.info("토큰이 존재하지 않으므로 알림을 전송하지 않습니다.");
+            log.info("[새 이상상황] 토큰이 존재하지 않으므로 알림을 전송하지 않습니다.");
             return;
         }
         fcmService.sendNotificationToMany(tokens, infoRequest, savedInfo, true);
-        log.info("send message finished");
+        log.info("[새 이상상황] 알림을 전송 완료.");
     }
 
 
