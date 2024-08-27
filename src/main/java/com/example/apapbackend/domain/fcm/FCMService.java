@@ -34,18 +34,14 @@ public class FCMService {
         Map<String, String> data = new HashMap<>();
         data.put("infoId", String.valueOf(savedInfo.getId())); // 이상 상황(Info) ID
         data.put("isNew", Boolean.toString(isNew)); // 이상 상황 발생 or 지속 여부
+        data.put("title", infoRequest.cameraName() + "에서 " + infoRequest.label() + newOrContinue); // 제목
+        data.put("body", infoRequest.localDateTime().format(DateTimeFormatter.ofPattern("MM월 dd일 HH시 mm분"))); // 본문
+        data.put("imageUrl", savedInfo.getImageUrl()); // 이미지 URL
 
         // FCM에 보낼 메시지 빌드
         MulticastMessage fcmMessage = MulticastMessage.builder()
             .addAllTokens(tokens)
-            .setNotification(com.google.firebase.messaging.Notification.builder()
-                .setTitle(infoRequest.cameraName() + "에서 " + infoRequest.label()
-                    + newOrContinue) // 제목 ex) E-114 에서 안전모 미착용 발생
-                .setBody(infoRequest.localDateTime().format(
-                    DateTimeFormatter.ofPattern("MM월 dd일 HH시 mm분"))) // 발생 시각 ex) 7월 7일 7시 7분
-                .setImage(savedInfo.getImageUrl()) // 이상 상황 이미지 주소 URL
-                .build())
-            .putAllData(data)
+            .putAllData(data) // 추가 데이터
             .build();
 
         log.info("fcmMessage: {}", fcmMessage);
@@ -78,12 +74,16 @@ public class FCMService {
      */
     @Transactional
     public void saveToken(FCMTokenRequest tokenRequest) {
+        log.info("fcmTokenRequest: {}", tokenRequest);
         if (!fcmTokenRepository.existsByEmail(tokenRequest.email())) {
-            fcmTokenRepository.save(tokenRequest.toEntity());
+            FCMToken savedToken = fcmTokenRepository.save(tokenRequest.toEntity());
+            log.info("fcmToken saved: {}", savedToken);
             return;
         }
         FCMToken fcmToken = fcmTokenRepository.findByEmail(tokenRequest.email());
         fcmToken.updateToken(tokenRequest.token());
+        log.info("fcmToken updated: {}", fcmToken);
+
     }
 
     public List<String> getTokens() {

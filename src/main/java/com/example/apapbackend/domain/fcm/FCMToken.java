@@ -31,4 +31,13 @@ public class FCMToken {
     public void updateToken(String token) {
         this.token = token;
     }
+
+    @Override
+    public String toString() {
+        return "FCMToken{" +
+            "id=" + id +
+            ", email='" + email + '\'' +
+            ", token='" + token + '\'' +
+            '}';
+    }
 }
