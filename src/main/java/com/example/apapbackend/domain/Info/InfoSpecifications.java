@@ -11,12 +11,12 @@ public class InfoSpecifications {
 
     public static Specification<Info> hasStartDate(LocalDate startDate) {
         return (Root<Info> root, CriteriaQuery<?> query, CriteriaBuilder cb) ->
-            startDate == null ? cb.conjunction() : cb.greaterThanOrEqualTo(root.get("startDate"), startDate.atStartOfDay());
+            startDate == null ? cb.conjunction() : cb.greaterThanOrEqualTo(root.get("localDateTime"), startDate.atStartOfDay());
     }
 
     public static Specification<Info> hasEndDate(LocalDate endDate) {
         return (Root<Info> root, CriteriaQuery<?> query, CriteriaBuilder cb) ->
-            endDate == null ? cb.conjunction() : cb.lessThanOrEqualTo(root.get("endDate"), endDate.atTime(23, 59, 59, 999_999_999));
+            endDate == null ? cb.conjunction() : cb.lessThanOrEqualTo(root.get("localDateTime"), endDate.atTime(23, 59, 59, 999_999_999));
     }
 
     public static Specification<Info> hasCameraName(String cameraName) {
