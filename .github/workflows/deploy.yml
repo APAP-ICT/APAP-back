@@ -72,7 +72,7 @@ jobs:
         with:
           host: ${{ secrets.AWS_HOST_IP }}
           key: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
-          scripts: |
+          script: |
             docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
             docker pull ${{ secrets.DOCKER_USERNAME }}/apap-backend:latest
             docker stop $(docker ps -a -q)
