@@ -65,3 +65,17 @@ jobs:
           push: true # 이미지 빌드 후 Docker Hub 에 이미지 푸시 여부
           tags: ${{ secrets.DOCKER_USERNAME }}/apap-backend:latest # Docker Hub 사용자 이름, 리포지토리 이름, 빌드된 이미지에 붙일 태그
           no-cache: true # 이미지 빌드 시 캐시 사용 여부
+
+      # EC2 인스턴스에 Docker 이미지 배포
+      - name: Deploy to AWS EC2
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.AWS_HOST_IP }}
+          key: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
+          scripts: |
+            docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+            docker pull ${{ secrets.DOCKER_USERNAME }}/apap-backend:latest
+            docker stop $(docker ps -a -q)
+            docker run -d --log-driver=sys log -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/apap-backend:latest
+            docker rm $(docker ps --filter 'status=exited' -a -q)
+            docker image prune -a -f
