@@ -73,6 +73,7 @@ jobs:
           host: ${{ secrets.AWS_HOST_IP }} # 인스턴스 IP
           username: ${{ secrets.REMOTE_USER }} # 우분투 ID
           key: ${{ secrets.AWS_EC2_PRIVATE_KEY }} # EC2 인스턴스 pem key
+          port: ${{ secrets.REMOTE_SSH_PORT }} # 접속 포트(생략 시 22번 기본 사용)
           script: |
             docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
             docker pull ${{ secrets.DOCKER_USERNAME }}/apap-backend:latest
