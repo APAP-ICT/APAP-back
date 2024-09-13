@@ -78,6 +78,6 @@ jobs:
             docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
             docker pull ${{ secrets.DOCKER_USERNAME }}/apap-backend:latest
             docker stop $(docker ps -a -q)
-            docker run -d --name apap-backend --log-driver=syslog -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/apap-backend:latest
+            docker run -d --name apap-backend --network apap-backend --log-driver=syslog -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/apap-backend:latest
             docker rm $(docker ps --filter 'status=exited' -a -q)
             docker image prune -a -f
