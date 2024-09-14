@@ -31,7 +31,7 @@ public class InfoController {
     @PostMapping
     @Operation(
         summary = "AI 서버로부터 이상 상황 정보 받음, 조건부 알림 전송",
-        description = "이상 상황의 조건에 따라 조건부 알림을 전송합니다."
+        description = "이상 상황의 조건에 따라 조건부 알림을 전송합니다. - 테스트"
     )
     public ResponseEntity postInfo(@Valid @RequestBody InfoRequest infoRequest) {
         // 조건에 따라 메시지 전송
